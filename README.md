@@ -1,43 +1,38 @@
-# Cookiecutter Data Science
+# Cookiecutter Data Science with Best Practices
 
-_A logical, reasonably standardized, but flexible project structure for doing and sharing data science work._
+This template uses [drivendata](http://drivendata.github.io/cookiecutter-data-science/)'s template as base but adds the best practices as introduced by [Sourcery.ai](https://sourcery.ai/blog/python-best-practices/).
 
+## Quickstart
 
-#### [Project homepage](http://drivendata.github.io/cookiecutter-data-science/)
+```sh
+# Install pipx if pipenv and cookiecutter are not installed
+python3 -m pip install pipx
+python3 -m pipx ensurepath
 
+# Install pipenv using pipx
+pipx install pipenv
 
-### Requirements to use the cookiecutter template:
------------
- - Python 2.7 or 3.5
- - [Cookiecutter Python package](http://cookiecutter.readthedocs.org/en/latest/installation.html) >= 1.4.0: This can be installed with pip by or conda depending on how you manage your Python packages:
+# Use cookiecutter to create project from this template
+pipx run cookiecutter gh:markkvdb/cookiecutter-data-science
 
-``` bash
-$ pip install cookiecutter
+# Enter project directory
+cd <repo_name>
+
+# Initialise git repo
+git init
+
+# Install dependencies
+make install
+
+# Setup pre-commit and pre-push hooks
+make pre_hooks
 ```
 
-or
-
-``` bash
-$ conda config --add channels conda-forge
-$ conda install cookiecutter
-```
-
-
-### To start a new project, run:
-------------
-
-    cookiecutter https://github.com/drivendata/cookiecutter-data-science
-
-
-[![asciicast](https://asciinema.org/a/244658.svg)](https://asciinema.org/a/244658)
-
-
-### The resulting directory structure
-------------
+## Resulting Directory Structure
 
 The directory structure of your new project looks like this: 
 
-```
+```console
 ├── LICENSE
 ├── Makefile           <- Makefile with commands like `make data` or `make train`
 ├── README.md          <- The top-level README for developers using this project.
@@ -60,8 +55,10 @@ The directory structure of your new project looks like this:
 ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
 │   └── figures        <- Generated graphics and figures to be used in reporting
 │
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
+├── Dockerfile         <- The dockerfile to set up this project in a encapsulated container.
+│
+├── Pipfile            <- Configuration file containing all information to build your package,
+│                         e.g., it contains requirements, scripts and the pypi URL.
 │
 ├── src                <- Source code for use in this project.
 │   ├── __init__.py    <- Makes src a Python module
@@ -80,7 +77,7 @@ The directory structure of your new project looks like this:
 │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
 │       └── visualize.py
 │
-└── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+└── setup.cfg          <- tox file with settings for running tox; see tox.readthedocs.io
 ```
 
 ## Contributing

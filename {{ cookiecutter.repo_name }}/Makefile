@@ -45,6 +45,11 @@ endif
 install:
 	pipenv install
 
+## Install prehooks
+pre_hooks:
+	pipenv run pre-commit install -t pre-commit
+	pipenv run pre-commit install -t pre-push
+
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
