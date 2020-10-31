@@ -6,7 +6,6 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 BUCKET = {{ cookiecutter.s3_bucket }}
 PROFILE = {{ cookiecutter.aws_profile }}
 PROJECT_NAME = {{ cookiecutter.repo_name }}
-
 PYTHON_INTERPRETER = pipenv run python
 
 DATA_DIR := $(realpath ./data)
@@ -45,23 +44,35 @@ FIGURE_FILES := $(wildcard $(REPORT_DIR)/figures/*)
  	clean_python clean_output install sync_data_to_s3 sync_data_from_s3 set_pre_hooks
 
 ## Preprocess raw data
-data: $(SRC_DATA_FILES) $(DATA_EXTERNAL_FILES) $(DATA_RAW_FILES)
-	$(PYTHON_INTERPRETER) $(SRC_DIR_DATA)/make_dataset.py
+data: $(SRC_DIR_DATA)/make_dataset.py
 
 ## Build features from preprocessed data
-features: data $(SRC_FEATURES_FILES)
-	$(PYTHON_INTERPRETER) $(SRC_DIR_FEATURES)/build_features.py
+features: $(SRC_DIR_FEATURES)/build_features.py
 
 ## Train models
-train_models: features $(SRC_DIR_MODELS)/train_model.py
-	$(PYTHON_INTERPRETER) $(SRC_DIR_MODELS)/train_model.py
+train_models: $(SRC_DIR_MODELS)/train_model.py
 
 ## Predict models
-predict_models: train_models $(SRC_DIR_MODELS)/predict_model.py
-	$(PYTHON_INTERPRETER) $(SRC_DIR_MODELS)/predict_model.py
+predict_models: $(SRC_DIR_MODELS)/predict_model.py
 
 ## Create all reporting documents (TODO)
 reports:
+
+#################################################################################
+# TARGETS TO CALL                                                               #
+#################################################################################
+
+$(SRC_DIR_DATA)/make_dataset.py: $(DATA_EXTERNAL_FILES) $(DATA_RAW_FILES)
+	$(PYTHON_INTERPRETER) $(SRC_DIR_DATA)/make_dataset.py
+
+$(SRC_DIR_FEATURES)/build_features.py: $(DATA_PROCESSED_FILES)
+	$(PYTHON_INTERPRETER) $(SRC_DIR_FEATURES)/build_features.py
+
+$(SRC_DIR_MODELS)/train_model.py: $(DATA_INTERIM_FILES)
+	$(PYTHON_INTERPRETER) $(SRC_DIR_MODELS)/train_model.py
+
+$(SRC_DIR_MODELS)/predict_model.py: $(MODEL_FILES)
+	$(PYTHON_INTERPRETER) $(SRC_DIR_MODELS)/predict_model.py
 
 #################################################################################
 # COMMANDS (DO NOT TOUCH)                                                       #
