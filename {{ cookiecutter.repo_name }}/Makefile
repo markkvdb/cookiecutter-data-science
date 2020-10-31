@@ -1,5 +1,3 @@
-.PHONY: data features clean install sync_data_to_s3 sync_data_from_s3
-
 #################################################################################
 # GLOBALS                                                                       #
 #################################################################################
@@ -9,27 +7,81 @@ BUCKET = {{ cookiecutter.s3_bucket }}
 PROFILE = {{ cookiecutter.aws_profile }}
 PROJECT_NAME = {{ cookiecutter.repo_name }}
 
-DATA_DIR = $(realpath ./data)
+PYTHON_INTERPRETER = pipenv run python
+
+DATA_DIR := $(realpath ./data)
 DATA_DIR_EXTERNAL = $(DATA_DIR)/external
 DATA_DIR_INTERIM = $(DATA_DIR)/interim
 DATA_DIR_PROCESSED = $(DATA_DIR)/processed
 DATA_DIR_RAW = $(DATA_DIR)/raw
 
+DATA_EXTERNAL_FILES := $(wildcard $(DATA_DIR_EXTERNAL)/*)
+DATA_RAW_FILES := $(wildcard $(DATA_DIR_RAW)/*)
+DATA_PROCESSED_FILES := $(wildcard $(DATA_DIR_PROCESSED)/*)
+DATA_INTERIM_FILES := $(wildcard $(DATA_DIR_INTERIM)/*)
+
+SRC_DIR := $(realpath ./src)
+SRC_DIR_DATA = $(SRC_DIR)/data
+SRC_DIR_FEATURES = $(SRC_DIR)/features
+SRC_DIR_MODELS = $(SRC_DIR)/models
+SRC_DIR_REPORTS = $(SRC_DIR)/reports
+
+SRC_DATA_FILES := $(wildcard $(SRC_DIR_DATA)/*.py)
+SRC_FEATURES_FILES := $(wildcard $(SRC_DIR_FEATURES)/*.py)
+SRC_MODELS_FILES := $(wildcard $(SRC_DIR_MODELS)/*.py)
+
+MODEL_DIR := $(realpath ./models)
+MODEL_FILES := $(wildcard $(MODEL_DIR)/*)
+
+REPORT_DIR := $(realpath ./reports)
+REPORT_FILES := $(wildcard $(REPORT_DIR)/*)
+FIGURE_FILES := $(wildcard $(REPORT_DIR)/figures/*)
+
 #################################################################################
-# COMMANDS                                                                      #
+# COMMANDS (USER-DEFINED)                                                       #
 #################################################################################
 
-## Make Dataset
-data: install
-	pipenv run make_data
+.PHONY: data features train_models predict_models report clean_all \
+ 	clean_python clean_output install sync_data_to_s3 sync_data_from_s3 set_pre_hooks
 
-features: install
-	pipenv run build_features
+## Preprocess raw data
+data: $(SRC_DATA_FILES) $(DATA_EXTERNAL_FILES) $(DATA_RAW_FILES)
+	$(PYTHON_INTERPRETER) $(SRC_DIR_DATA)/make_dataset.py
+
+## Build features from preprocessed data
+features: data $(SRC_FEATURES_FILES)
+	$(PYTHON_INTERPRETER) $(SRC_DIR_FEATURES)/build_features.py
+
+## Train models
+train_models: features $(SRC_DIR_MODELS)/train_model.py
+	$(PYTHON_INTERPRETER) $(SRC_DIR_MODELS)/train_model.py
+
+## Predict models
+predict_models: train_models $(SRC_DIR_MODELS)/predict_model.py
+	$(PYTHON_INTERPRETER) $(SRC_DIR_MODELS)/predict_model.py
+
+## Create all reporting documents (TODO)
+reports:
+
+#################################################################################
+# COMMANDS (DO NOT TOUCH)                                                       #
+#################################################################################
+
+## Clean all files
+clean_all: clean_python clean_output
 
 ## Delete all compiled Python files
-clean:
+clean_python:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
+
+## Clean processed and interim data
+clean_output:
+	rm -f $(DATA_PROCESSED_FILES)
+	rm -f $(DATA_INTERIM_FILES)
+	rm -f $(MODEL_FILES)
+	rm -f $(REPORT_FILES)
+	rm -f $(FIGURE_FILES)
 
 ## Upload Data to S3
 sync_data_to_s3:
@@ -52,7 +104,7 @@ install:
 	pipenv install
 
 ## Install prehooks
-pre_hooks:
+set_pre_hooks:
 	pipenv run pre-commit install -t pre-commit
 	pipenv run pre-commit install -t pre-push
 

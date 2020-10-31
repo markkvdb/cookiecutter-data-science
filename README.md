@@ -25,7 +25,7 @@ git init
 make install
 
 # Setup pre-commit and pre-push hooks
-make pre_hooks
+make set_pre_hooks
 ```
 
 ## Resulting Directory Structure
