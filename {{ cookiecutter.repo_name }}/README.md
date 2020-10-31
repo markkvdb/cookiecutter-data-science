@@ -4,60 +4,73 @@
 
 {{cookiecutter.description}}
 
-## Project Organization
-
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
-
 ## Installation
 
 ```sh
-# Install dependencies
-pipenv install --dev
+# Clone this repository
+gh clone <repo>
 
-# Setup pre-commit and pre-push hooks
-pipenv run pre-commit install -t pre-commit
-pipenv run pre-commit install -t pre-push
+# Enter project directory
+cd <repo_name>
+
+# Install dependencies
+pipenv install
 ```
+
+## Usage
+
+The project is divided into several steps. Every step has a corresponding `make` command. To get an overview of the options run
+
+```sh
+make help
+```
+
+To configure what functions or steps should be taken for each step I refer to the `Makefile` which contains the scripts and dependencies called for each command.
+
+### Data Processing
+
+First, the data is downloaded an processed into a form that is useable for the project. The idea is to transform and load external data (found in `data/external`) and raw immutable data (in `data/raw`). This can be done by running the following command.
+
+```sh
+make data
+```
+
+After running this script, the `data/processed` folder will be populated.
+
+### Feature Engineering
+
+Transform the processed data by extracting and building useful features and save them to the `data/interim` folder by running
+
+```sh
+make build_features
+```
+
+### Models
+
+The final data required after the feature engineering step is used to train our models and use them to predict.
+
+#### Training
+
+Training all models can be done by calling
+
+```sh
+make train_models
+```
+
+This will populate the `models` folder with model objects of some form, e.g., tensorflow, pytorch or sklearn models.
+
+Note that this script will run all models.
+
+#### Predicting
+
+TODO
+
+### Reporting
+
+Create figures, documents and other reporting output by running
+
+```sh
+make reports
+```
+
+This command will populate the `reports` folder.

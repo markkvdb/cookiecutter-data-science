@@ -9,6 +9,12 @@ BUCKET = {{ cookiecutter.s3_bucket }}
 PROFILE = {{ cookiecutter.aws_profile }}
 PROJECT_NAME = {{ cookiecutter.repo_name }}
 
+DATA_DIR = $(realpath ./data)
+DATA_DIR_EXTERNAL = $(DATA_DIR)/external
+DATA_DIR_INTERIM = $(DATA_DIR)/interim
+DATA_DIR_PROCESSED = $(DATA_DIR)/processed
+DATA_DIR_RAW = $(DATA_DIR)/raw
+
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################

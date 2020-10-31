@@ -30,7 +30,7 @@ make pre_hooks
 
 ## Resulting Directory Structure
 
-The directory structure of your new project looks like this: 
+The directory structure of your new project looks like this:
 
 ```console
 ├── LICENSE
@@ -80,16 +80,8 @@ The directory structure of your new project looks like this:
 └── setup.cfg          <- tox file with settings for running tox; see tox.readthedocs.io
 ```
 
-## Contributing
+## Tips & Comments
 
-We welcome contributions! [See the docs for guidelines](https://drivendata.github.io/cookiecutter-data-science/#contributing).
+- This cookiecutter template is based on the [data-science template](https://github.com/drivendata/cookiecutter-data-science). Check the documentation for extensions and manual configurations.
 
-### Installing development requirements
-------------
-
-    pip install -r requirements.txt
-
-### Running the tests
-------------
-
-    py.test tests
+- Advanced users can adapt the `Makefile` to their taste: add dependencies, add commands, etc. Furthermore, the `make` environment can be replaced by something more advanced like [Airflow](https://airflow.apache.org).
