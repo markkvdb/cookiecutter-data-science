@@ -44,35 +44,37 @@ FIGURE_FILES := $(wildcard $(REPORT_DIR)/figures/*)
  	clean_python clean_output install sync_data_to_s3 sync_data_from_s3 set_pre_hooks
 
 ## Preprocess raw data
-data: $(SRC_DIR_DATA)/make_dataset.py
+data: $(DAG_DIR)/data
 
 ## Build features from preprocessed data
-features: $(SRC_DIR_FEATURES)/build_features.py
+features: $(DAG_DIR)/features
 
 ## Train models
-train_models: $(SRC_DIR_MODELS)/train_model.py
+train_models: $(DAG_DIR)/train_models
 
 ## Predict models
-predict_models: $(SRC_DIR_MODELS)/predict_model.py
+predict_models: $(DAG_DIR)/predict_models
 
 ## Create all reporting documents (TODO)
-reports:
+reports: $(DAG_DIR)/reports
 
 #################################################################################
 # TARGETS TO CALL                                                               #
 #################################################################################
 
-$(SRC_DIR_DATA)/make_dataset.py: $(DATA_EXTERNAL_FILES) $(DATA_RAW_FILES)
-	$(PYTHON_INTERPRETER) $(SRC_DIR_DATA)/make_dataset.py
+$(DAG_DIR)/data: $(SRC_DIR_DATA)/make_dataset.py $(DATA_EXTERNAL_FILES) $(DATA_RAW_FILES)
+	$(PYTHON_INTERPRETER) $<
 
-$(SRC_DIR_FEATURES)/build_features.py: $(DATA_PROCESSED_FILES)
-	$(PYTHON_INTERPRETER) $(SRC_DIR_FEATURES)/build_features.py
+$(DAG_DIR)/features: $(SRC_DIR_FEATURES)/build_features.py $(DATA_PROCESSED_FILES)
+	$(PYTHON_INTERPRETER) $<
 
-$(SRC_DIR_MODELS)/train_model.py: $(DATA_INTERIM_FILES)
-	$(PYTHON_INTERPRETER) $(SRC_DIR_MODELS)/train_model.py
+$(DAG_DIR)/train_models: $(SRC_DIR_MODELS)/train_model.py $(DATA_INTERIM_FILES)
+	$(PYTHON_INTERPRETER) $<
 
-$(SRC_DIR_MODELS)/predict_model.py: $(MODEL_FILES)
-	$(PYTHON_INTERPRETER) $(SRC_DIR_MODELS)/predict_model.py
+$(DAG_DIR)/predict_models: $(SRC_DIR_MODELS)/predict_model.py $(MODEL_FILES)
+	$(PYTHON_INTERPRETER) $<
+
+$(DAG_DIR)/reports:
 
 #################################################################################
 # COMMANDS (DO NOT TOUCH)                                                       #
