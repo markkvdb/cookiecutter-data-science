@@ -1,4 +1,4 @@
-[source]]
+[[source]]
 name = "pypi"
 url = "https://pypi.python.org/simple"
 verify_ssl = true
@@ -12,6 +12,8 @@ predict_model = "python src/models/predict_model.py"
 [requires]
 python_version = "{ python_version }"
 
+[dev-packages]
+
 [packages]
 black = "==20.8b1"
 flake8 = "*"
@@ -21,8 +23,4 @@ pre-commit = "*"
 pytest = "*"
 pytest-cov = "*"
 awscli = "*"
-click = "*"
 Sphinx = "*"
-
-[dev-packages]
-
