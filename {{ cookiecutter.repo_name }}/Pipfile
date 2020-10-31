@@ -10,7 +10,7 @@ train_model = "python src/models/train_model.py"
 predict_model = "python src/models/predict_model.py"
 
 [requires]
-python_version = "{python_version}"
+python_version = "{ python_version }"
 
 [packages]
 black = "==20.8b1"
